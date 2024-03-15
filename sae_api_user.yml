@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: API de Gestion d'Utilisateurs et de Tâches
+  version: 1.0.0
+  description: API pour la gestion des utilisateurs et des tâches dans un système de gestion de projets.
+  contact:
+    email: iut@stmalo.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://iut.stmalo.com/api/v1
+tags:
+  - name: utilisateurs
+    description: Opérations pour les utilisateurs
+  - name: taches
+    description: Opérations pour les tâches
+
+paths:
+  /utilisateurs:
+    post:
+      tags:
+        - utilisateurs
+      summary: Créer un utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Utilisateur'
+      responses:
+        '201':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+
+  /utilisateurs/{utilisateurId}:
+    get:
+      tags:
+        - utilisateurs
+      summary: Récupérer les informations d'un utilisateur
+      parameters:
+        - name: utilisateurId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Informations de l'utilisateur récupérées avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '404':
+          description: Utilisateur non trouvé
+
+    put:
+      tags:
+        - utilisateurs
+      summary: Mettre à jour les informations d'un utilisateur
+      parameters:
+        - name: utilisateurId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+      responses:
+        '200':
+          description: Informations de l'utilisateur mises à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilisateur'
+        '404':
+          description: Utilisateur non trouvé
+
+    delete:
+      tags:
+        - utilisateurs
+      summary: Supprimer un utilisateur
+      parameters:
+        - name: utilisateurId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '204':
+          description: Utilisateur supprimé avec succès
+        '404':
+          description: Utilisateur non trouvé
+
+components:
+  schemas:
+    Utilisateur:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nom:
+          type: string
+          example: "Doe"
+        prenom:
+          type: string
+          example: "John"
+        pseudo:
+          type: string
+          example: "johndoe"
+        mail:
+          type: string
+          format: email
+          example: "johndoe@example.com"
+        adresse:
+          type: string
+          example: "123 rue de l'Exemple"
+        pays:
+          type: string
+          example: "France"
+        departements:
+          type: string
+          example: "RH"
+        entreprises:
+          type: string
+          example: "ABC Inc."
+        PP:
+          type: string
+          example: "https://example.com/profile-picture.jpg"
+        descriptions:
+          type: string
+          example: "Description de l'utilisateur"
+      xml:
+        name: utilisateur
