@@ -13,3 +13,5 @@ Principaux objectifs de l'API Utilisateur :
 3. Mettre à jour les informations d'un utilisateur : Autoriser les applications à mettre à jour les informations d'un utilisateur existant, telles que le nom, l'adresse e-mail, le mot de passe, etc.
 
 4. Supprimer un utilisateur : Permettre aux applications de supprimer un utilisateur spécifique de la base de données, le cas échéant.
+
+5. Gérer les autorisations et les rôles : Intégrer des fonctionnalités pour gérer les autorisations et les rôles des utilisateurs, en permettant par exemple aux administrateurs de définir les privilèges d'accès des utilisateurs.
