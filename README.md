@@ -3,11 +3,11 @@
 #Contenue de la base de donnée de l'API utilisateur : 
 
 Base de donnée utilisateur (Accessible par toutes la API): 
- -ID
- -Username
- -Name
- -Surname
- -Mail
+ - ID
+ - Username
+ - Name
+ - Surname
+ - Mail
 
 #Objectif de l'API Utilisateur :
 
