@@ -18,14 +18,15 @@ components:
         id:
           type: integer
           format: int64
-        nom:
+        username:
           type: string
-        prenom:
+        name:
           type: string
-        mail: 
+        surname:
           type: string
-        pseudo:
+        email: 
           type: string
+        
 
 paths:
   /users:
@@ -51,7 +52,7 @@ paths:
     get:
       tags:
         - Users
-      summary: Récupérer les informations d'un utilisateur
+      summary: Récupérer les informations d'un utilisateur via l'ID
       parameters:
         - name: userId
           in: path
@@ -68,7 +69,8 @@ paths:
                 $ref: '#/components/schemas/Users'
         '404':
           description: Utilisateur non trouvé
-
+          
+  
     put:
       tags:
         - Users
@@ -112,3 +114,45 @@ paths:
           description: Utilisateur supprimé avec succès
         '404':
           description: Utilisateur non trouvé
+          
+          
+  /users/findby:
+    get:
+      tags:
+        - Users
+      summary: Rechercher un utilisateur par ID
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name : username
+          in : query
+          schema:
+            type : string
+          example : 1
+        - name : name
+          in : query
+          schema:
+            type : string
+          example : 1
+        - name : surname
+          in : query
+          schema:
+            type : string
+          example : 1
+          
+      responses:
+        '200':
+          description: Utilisateur trouvé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        '404':
+          description: Utilisateur non trouvé
+          
+          
+          
