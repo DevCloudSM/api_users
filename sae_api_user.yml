@@ -1,48 +1,59 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: API de Gestion d'Utilisateurs et de Tâches
-  version: 1.0.0
-  description: API pour la gestion des utilisateurs et des tâches dans un système de gestion de projets.
+  title : API_users
+  version : 1.0.0
+  description: API de gestion des utilisateurs
   contact:
-    email: iut@stmalo.com
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-servers:
-  - url: https://iut.stmalo.com/api/v1
+    name: Amaury Cournac
+    email: amaury.cournac@etudiant.univ-rennes1.fr
 tags:
-  - name: utilisateurs
-    description: Opérations pour les utilisateurs
-  - name: taches
-    description: Opérations pour les tâches
+  - name: Users
+    description: List of users and fonctions
+
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nom:
+          type: string
+        prenom:
+          type: string
+        mail: 
+          type: string
+        pseudo:
+          type: string
 
 paths:
-  /utilisateurs:
+  /users:
     post:
       tags:
-        - utilisateurs
+        - Users
       summary: Créer un utilisateur
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Utilisateur'
+              $ref: '#/components/schemas/Users'
       responses:
         '201':
           description: Utilisateur créé avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Utilisateur'
+                $ref: '#/components/schemas/Users'
 
-  /utilisateurs/{utilisateurId}:
+  /users/{userId}:
     get:
       tags:
-        - utilisateurs
+        - Users
       summary: Récupérer les informations d'un utilisateur
       parameters:
-        - name: utilisateurId
+        - name: userId
           in: path
           required: true
           schema:
@@ -54,16 +65,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Utilisateur'
+                $ref: '#/components/schemas/Users'
         '404':
           description: Utilisateur non trouvé
 
     put:
       tags:
-        - utilisateurs
+        - Users
       summary: Mettre à jour les informations d'un utilisateur
       parameters:
-        - name: utilisateurId
+        - name: userId
           in: path
           required: true
           schema:
@@ -74,23 +85,23 @@ paths:
         content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Utilisateur'
+                $ref: '#/components/schemas/Users'
       responses:
         '200':
           description: Informations de l'utilisateur mises à jour avec succès
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Utilisateur'
+                $ref: '#/components/schemas/Users'
         '404':
           description: Utilisateur non trouvé
 
     delete:
       tags:
-        - utilisateurs
+        - Users
       summary: Supprimer un utilisateur
       parameters:
-        - name: utilisateurId
+        - name: userId
           in: path
           required: true
           schema:
@@ -101,45 +112,3 @@ paths:
           description: Utilisateur supprimé avec succès
         '404':
           description: Utilisateur non trouvé
-
-components:
-  schemas:
-    Utilisateur:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 1
-        nom:
-          type: string
-          example: "Doe"
-        prenom:
-          type: string
-          example: "John"
-        pseudo:
-          type: string
-          example: "johndoe"
-        mail:
-          type: string
-          format: email
-          example: "johndoe@example.com"
-        adresse:
-          type: string
-          example: "123 rue de l'Exemple"
-        pays:
-          type: string
-          example: "France"
-        departements:
-          type: string
-          example: "RH"
-        entreprises:
-          type: string
-          example: "ABC Inc."
-        PP:
-          type: string
-          example: "https://example.com/profile-picture.jpg"
-        descriptions:
-          type: string
-          example: "Description de l'utilisateur"
-      xml:
-        name: utilisateur
