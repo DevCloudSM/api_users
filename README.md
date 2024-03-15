@@ -7,7 +7,7 @@ L'API Utilisateur a pour objectif de fournir des fonctionnalités permettant aux
 Principaux objectifs de l'API Utilisateur :
 
 1. Créer un utilisateur : Permettre aux applications d'enregistrer de nouveaux utilisateurs en fournissant les informations nécessaires telles que :
-nom; prenom; pseudo; mail; mdp; idées :
+nom; prenom; pseudo; mail; idées :
 adresse; pays; départements ( dans l'entreprise ); entreprises; PP; descriptions
 
 2. Supprimer un utilisateur : Permettre aux applications de supprimer un utilisateur spécifique de la base de données, le cas échéant.
