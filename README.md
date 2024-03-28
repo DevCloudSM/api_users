@@ -1,19 +1,19 @@
 # API_Utilisateurs
 
-#Contenue de la base de donnée de l'API utilisateur : 
+## Contenue de la base de donnée de l'API utilisateur : 
 
-Base de donnée utilisateur (Accessible par toutes la API): 
+**Base de donnée utilisateur (Accessible par toutes la API) :**
  - ID
  - Username
  - Name
  - Surname
  - Mail
 
-#Objectif de l'API Utilisateur :
+## Objectif de l'API Utilisateur :
 
 L'API Utilisateur a pour objectif de fournir des fonctionnalités permettant aux applications de gérer les profils des utilisateurs, y compris la création, la récupération, la mise à jour et la suppression des informations utilisateur.
 
-Principaux objectifs de l'API Utilisateur :
+**Principaux objectifs de l'API Utilisateur :**
 
 1. Créer un utilisateur : Permettre d'enregistrer de nouveaux utilisateurs en fournissant les informations nécessaires telles que :
       nom; prenom; pseudo; mail; id
