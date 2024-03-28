@@ -137,8 +137,6 @@ def get_user_findby():
 def affichage_recherche_modify():
     return modification_html
 
-# Permet d'utiliser la fonction findby avec un formulaire
-
 @app.route('/user/modify/suite', methods =['POST'])
 def recovery_of_user_to_modify():
     if request.method == 'POST':
@@ -163,11 +161,12 @@ def recovery_of_user_to_modify():
             if found_users:
                 # Supposons que vous voulez modifier le premier utilisateur trouvé
                 first_user = found_users[0]
+                user_id = first_user.get('id')
                 name = first_user.get('name')
                 surname = first_user.get('surname')
                 username = first_user.get('username')
                 email = first_user.get('email')
-                return render_template('modification_form.html', found_user_name=name, found_user_surname=surname, found_user_username=username, found_user_email=email)
+                return render_template('modification_form.html', found_user_id = user_id, found_user_name=name, found_user_surname=surname, found_user_username=username, found_user_email=email)
             else:
                 return jsonify({"error": "No user found matching the search criteria"}), 404
         else:
@@ -177,55 +176,69 @@ def recovery_of_user_to_modify():
     else:
         return jsonify({"error": "Method Not Allowed"}), 405
         
+@app.route('/user/<int:userId>', methods = ['PATCH'])
+def modification_user(userId): 
+    with open('list_user.json', 'r', encoding='utf-8') as f:
+        list_user = json.load(f)
+    # Recherche de l'utilisateur à modifier
+    user = next((a for a in list_user if a['id'] == userId), None)
+    if not user:
+        return jsonify({"error": "User not find"}), 404
 
-@app.route('/user/modify/<int:userID>', methods = ['PUT'])
-def update_user(user_Id):
-###################################################################  A modifié  ######################
-    new_user_data = get_user_findby(user_Id)
-    
-    # Charge la liste de users
-    if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
-        with open('list_user.json', 'r', encoding='utf-8') as f:
-            list_user = json.load(f)
+    # Récupération des données JSON de la requête
+    data = {} 
+    if request.is_json:
+        data = request.get_json()
+
+    # Mise à jour des informations de l'utilisateur
+    for key, value in data.items():
+        user[key] = value
+
+    # Enregistrement de la liste des users modifiée
+    with open('list_user.json', 'w', encoding='utf-8') as f:
+        json.dump(list_user, f)
+
+    return jsonify(user), 200
+
+@app.route('/user/modify/result', methods = ['POST'])
+def affichage_donnée_modifier():
+    content_type = request.headers['Content-Type']
+    if content_type == 'application/x-www-form-urlencoded':
+        user_id = request.form.get('id')
+        name = request.form.get('name')
+        surname = request.form.get('surname')
+        username = request.form.get('username')
+        email = request.form.get('email')
+    data_user = {'name': name, 'surname': surname, 'username':username, 'email': email}
+    headers = {'Content-Type': 'application/json'}
+    data=json.dumps(data_user)
+    response = requests.patch(f'http://localhost:5000/user/{user_id}', headers=headers, data=data)
+    if response.status_code == 200:
+        return 'Modification des données réussie'
     else:
-        return jsonify({"error": "No user found"}), 404
-    
-    
-    if request.method == 'PUT':
-        # Récupérer les données du formulaire
-        user['name'] = request.form['name']
-        user['surname'] = request.form['surname']
-        user['username'] = request.form['username']
-        user['email'] = request.form['email']
-        
-    # Rechercher l'utilisateur dans votre stockage de données
-    user_to_update = None
-    for user in list_user:
-        if user['id'] == user_Id:
-            user_to_update = user
+        return 'La modification des données a échoué', response.status_code
+
+@app.route('/user/delete<int:userId>', methods = ['DELETE'])
+def suppression_user(athleteId): 
+    if os.path.exists('list_user.json') and os.path.getsize('list_athlete.json') > 0:
+        with open('list_athlete.json', 'r', encoding='utf-8') as f:
+            list_athlete = json.load(f)
+
+    athlete_found = False
+    for index, athlete in enumerate(list_athlete):
+        if athlete['id'] == athleteId:
+            athlete_found = True
+            del list_athlete[index]
             break
+
+    if not athlete_found:
+        return jsonify({"error": "Athlete non trouvé"}), 404
     
-    # Si l'utilisateur est trouvé, mettre à jour ses informations
-    if user_to_update:
-        # Mettre à jour les informations de l'utilisateur avec les nouvelles données
-        user_to_update.update(new_user_data)
-        
-        # Sauvegarder les modifications dans votre stockage de données (par exemple, un fichier JSON)
-        # Réécri le fichier JSON avec la liste mise à jour
-        with open('list_user.json', 'w', encoding='utf-8') as f:
-            json.dump(list_user, f, ensure_ascii=False, indent=4)
+    # Enregistrement du fichier JSON mis à jour
+    with open('list_athlete.json', 'w', encoding='utf-8') as f:
+        json.dump(list_athlete, f, ensure_ascii=False, indent=4)
 
-        # Converti la liste d'athlètes en JSON#################
-        save_users_to_file = json.dumps(list_user, ensure_ascii=False, indent=4)
-       
-        
-        # Renvoyer une réponse indiquant que les informations de l'utilisateur ont été mises à jour avec succès
-        return jsonify({"message": "User information updated successfully"}), 200
-    else:
-        # Renvoyer une réponse indiquant que l'utilisateur n'a pas été trouvé
-        return jsonify({"error": "User not found"}), 404
-###################################################################  A modifié  ######################
-
+    return jsonify({}), 204
 
 @app.route('/test', methods=['GET'])
 def test():
@@ -252,12 +265,13 @@ index_html = """<!DOCTYPE html>
     <ul>
         <li><a href="/user">Add a user</a></li>
         <li><a href="/user/modify">Modify a user</a></li>
-        <li><a href="/user">Find a user</a></li>
+        <li><a href="/user/findby">Find a user</a></li>
+        <li><a href="/user/delete">Delete a user</a></li>
     </ul>
 </body>
 </html>"""
 
-# page pour la route /user 'PUT'
+# page pour la route /user 'PATCH'
 user_test_html = """<!DOCTYPE html>
 <html lang="fr">
 <head>
