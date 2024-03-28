@@ -1,0 +1,129 @@
+{% macro head(title, description, logo) %}
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='assets/scripts/main.js') }} " defer></script>
+    <title>{{ title }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='assets/images/logo.jpg') }}">  
+    <meta name="description" content="{{ description }}">
+</head>
+{% endmacro %}
+
+{% macro body(service, version, endpoints) %}
+<div class="row"> 
+    <div class="col-lg-3 col-md-3 col-sm-12 col-12 "> 
+        <div class="list-group py-4 text-center"> 
+            <h4 class="title">{{ service }}</h4> 
+            <div class="center">
+                <span class="badge bg-success">Stable</span>
+                <span class="badge bg-warning text-dark">{{ version }}</span>
+            </div>
+            <hr class="mx-2 text-white">
+            {% for endpoint in endpoints %}
+            <a class="my-1 list-group-item list-group-item-action section" href="#{{ endpoint.id }}">{{ endpoint.name }}</a> 
+            {% endfor %}
+            <hr class="mx-2 text-white">
+            <div class="dropdown pt-3">
+                <a href="#" class="text-white text-decoration-none" data-bs-toggle="dropdown">
+                    <img src="{{ url_for('static', filename='assets/images/papillon.jpg') }} " alt="papillon" width="30" height="30" class="rounded-circle">
+                    <span class="">SUPER_USER</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div> 
+    <div class="col-lg-9 col-md-9 col-sm-12 col-12 px-5 py-4 bg-white text-dark"> 
+        <div data-bs-spy="scroll" data-bs-target="#navbar-example">
+            {% if False %}
+            {% for endpoint in endpoints %}
+            <div class="containerh-50"> 
+                <h2 class="title-3 color-orange" id="{{ endpoint.id }}">{{ endpoint.name }}</h2> 
+                <br> 
+                <form>
+                    <div class="mb-1">
+                        <label for="fname" class="form-label">First name:</label>
+                        <input type="text" class="form-control" id="fname" name="fname">
+                    </div>
+                    <div class="mb-1">
+                        <label for="lname" class="form-label">Last name:</label>
+                        <input type="text" class="form-control" id="lname" name="lname">
+                    </div>
+                    <div class="mb-1">
+                        <label for="email" class="form-label">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="mb-1">
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="mb-1">
+                        <label for="birthday" class="form-label">Birthday:</label>
+                        <input type="date" class="form-control" id="birthday" name="birthday">
+                    </div>
+                    <div class="mb-1">
+                        <label class="form-label">Gender:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="male" name="gender" value="male">
+                            <label class="form-check-label" for="male">Male</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="female" name="gender" value="female">
+                            <label class="form-check-label" for="female">Female</label>
+                        </div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="terms" name="terms" value="accepted">
+                        <label class="form-check-label" for="terms">Accept terms and conditions</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Bio:</label>
+                        <textarea class="form-control" id="bio" name="bio"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            {% endfor %}
+            {% endif%}
+        </div> 
+    </div> 
+</div>
+{% endmacro %}
+
+{% macro footer(group, contact) %}
+<footer class="text-center py-4 bg-footer text-white">
+    <div class="container">
+        <div class="row d-flex align-items-center">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12 mt-2">
+                <h1 class="title-2 blue-shadow">Groupe</h1>
+                {% for member in group %}
+                <div>{{ member }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12 mt-2">
+                <h1 class="title-2 blue-shadow">Contact</h1>
+                <div>Email: {{ contact.email }}</div>
+                <div>Phone: {{ contact.phone }}</div>
+                <div>Address: {{ contact.address }}</div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <p>&copy; 2024 {{ contact.service }} | Tous droits réservés |<a href="/legal.html"> Mentions légales </a></p>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</footer>
+{% endmacro %}
