@@ -1,9 +1,0 @@
-services:
-  postgres_database:
-    container_name: postgres_database
-    build: ./postgresql
-    restart: always
-    environment:
-      - POSTGRES_PASSWORD=bonjour
-    ports:
-      - "6033:3306"
