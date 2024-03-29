@@ -7,6 +7,7 @@ app = Flask(__name__)
 @app.route("/") 
 def accueil(): 
     # Ouvre le fichier index.html lors de la connection à l'api
+    return render_template("index.html", title="USER API", version="1.0.0", group=["COURNAC Amaury", "GARAT Kerrian", "DANIEL Aronn"])
     return index_html 
 
 @app.route('/user')
@@ -217,6 +218,7 @@ def affichage_donnée_modifier():
         return 'Modification des données réussie'
     else:
         return 'La modification des données a échoué', response.status_code
+    
 
 @app.route('/user/delete<int:userId>', methods = ['DELETE'])
 def suppression_user(athleteId): 

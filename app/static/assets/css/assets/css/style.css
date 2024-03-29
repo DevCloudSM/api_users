@@ -1,0 +1,221 @@
+:root {
+    --blue:  rgba(129, 212, 252, 1);
+    --bleu-shadow: rgba(129, 212, 252, 0.5);
+
+    --light_blue: rgba(239, 250, 255, 1);
+    --light_blue-shadow: rgba(239, 250, 255, 0.5);
+
+    --purple: rgba(227, 129, 250, 1);
+    --purple-shadow: rgba(227, 129, 250, 0.5);
+
+    --pink: rgba(198, 82, 145, 1);
+
+
+    --orange: rgb(250, 167, 129, 1);
+    --orange-shadow: rgba(250, 167, 129, 0.5);
+
+    --green: rgba(182, 250, 129, 1);
+    --green-shadow: rgba(182, 250, 129, 0.5);
+
+    --background-color: rgb(33, 37, 41, 1);
+    --light-background-color: rgb(51, 50, 48, 0.5);
+
+    --background-color-footer: rgb(33, 37, 41, 1);
+    --light-background-color-footer: rgb(51, 50, 48, 0.5);
+}
+
+
+
+body {
+    background-color: var(--background-color);
+    /*overflow: hidden;*/
+    /*overflow-x: hidden;*/
+    font-family: 'Roboto', sans-serif;
+}
+
+@font-face {
+    font-family: 'Designer';
+    src: url('../fonts/Comixo-Regular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'Prototype';
+    src: url("../fonts/Prototype.ttf") format('truetype');
+}
+
+.fontDesigner{
+    font-family: 'Designer', sans-serif;
+}
+
+.blue-shadow{
+    text-shadow: 5px 5px var(--bleu-shadow);
+}
+.light-blue-shadow{
+    text-shadow: 5px 5px var(--light_blue-shadow);
+}
+.purple-shadow{
+    text-shadow: 5px 5px var(--purple-shadow);
+}
+.orange-shadow{
+    text-shadow: 5px 5px var(--orange-shadow);
+}
+.green-shadow{
+    text-shadow: 5px 5px var(--green-shadow);
+}
+
+.hr{ 
+    color: var(--light_blue-shadow); 
+    text-align: center;
+}
+
+.title {
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 5rem;
+    color: var(--blue);
+
+    @media screen and (max-width: 1920px) {
+        font-size: 1.5rem;
+    }
+
+    @media screen and (max-width: 992px) {
+        font-size: 1.25rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        font-size: 1rem;
+    }
+}
+
+.title-2{
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 2.5rem;
+    color: var(--blue);
+}
+
+.title-3{
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 1.25rem;
+    color: var(--blue);
+}
+
+.titleShadow{
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 5rem;
+    color: var(--blue);
+}
+
+.subtitle{
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 1rem;
+    color: var(--blue);
+}
+
+.section{
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 1rem;
+    color: var(--blue);
+    text-shadow: 2px 2px var(--bleu-shadow);
+
+    @media screen and (max-width: 1920px) {
+        font-size: 1rem;
+    }
+
+    @media screen and (max-width: 992px) {
+        font-size: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        font-size: 0.75rem;
+    }
+
+    @media screen and (max-width: 576px) {
+        font-size: 0.75rem;
+    }
+}
+
+.containerh-50 {
+    background-color: rgb(255, 243, 250)    ;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.section-table{
+    font-family: 'Designer', sans-serif;
+    letter-spacing: 0.25rem;
+    font-size: 1rem;
+    color: var(--blue);
+    text-shadow: 2px 2px var(--bleu-shadow);
+    @media screen and (max-width: 1920px) {
+        font-size: 1rem;
+    }
+
+    @media screen and (max-width: 992px) {
+        font-size: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        font-size: 0.75rem;
+    }
+
+    @media screen and (max-width: 576px) {
+        font-size: 0.75rem;
+    }
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    color: var(--blue);
+    background-color: var(--background-color);
+    border: 0px solid rgba(0,0,0,.125);
+}
+.list-group-item:hover {
+    position: relative;
+    display: block;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    color: var(--blue);
+    background-color: var(--light-background-color);
+    border: 0px solid rgba(0,0,0,.125);
+}
+
+.fontPrototype{
+    font-family: 'Prototype', sans-serif;
+}
+
+.color-blue{
+    color: var(--blue);
+}
+.color-light-blue{
+    color: var(--light_blue);
+}
+.color-purple{
+    color: var(--purple);
+}
+.color-orange{
+    color: var(--orange);
+}
+.color-green{
+    color: var(--green);
+}
+
+.nav-link:hover{
+    color: var(--blue);
+}
+.bg-footer{
+    background-color: rgba(205, 217, 230, 0.136);
+}
+
+.bg-pink{
+    background-color: var(--pink);
+}

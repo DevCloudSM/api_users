@@ -1,0 +1,15 @@
+{% import 'macros.j2' as macros %}
+<!DOCTYPE html>
+<html lang="fr">
+        {{macros.head(title, "Page d'accueil")}}
+    <body>
+        {{macros.body(title, version, [{"id":"1", "name":"Create a user"}, {"id":"2", "name":"Edit a user"}, {"id":"2", "name":"Found a user"}, {"id":"2", "name":"Delete a user"}])}}
+        <div>
+            <h1>API_User</h1>
+            <h2>Contenue de la base de donnée de l'API utilisateur :</h2>
+            <h4>Base de donnée utilisateur (Accessible par toutes la API) :</h4>
+        </div>
+
+        {{macros.footer(group, {"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}}
+    </body>
+</html>

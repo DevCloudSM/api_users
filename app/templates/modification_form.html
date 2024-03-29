@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Update a user</title>
+</head>
+<body>
+    <h1>Update a user</h1>
+    <form method="POST" action="/user/modify/result">
+        <label for="id">ID :</label>
+        <input type="text" id="id" name="id" value="{{ found_user_id }}" readonly><br>
+        <label for="name">Name :</label>
+        <input type="text" id="name" name="name" value="{{ found_user_name }}" required><br>
+        <label for="surname">Surname :</label>
+        <input type="text" id="surname" name="surname" value="{{ found_user_surname }}" required><br>
+        <label for="username">Username :</label>
+        <input type="text" id="username" name="username" value="{{ found_user_username }}" required><br>
+        <label for="email">Email :</label>
+        <input type="text" id="email" name="email" value="{{ found_user_email }}" required><br>
+        <input type="submit" value="Update">
+    </form>
+</body>
+</html>
