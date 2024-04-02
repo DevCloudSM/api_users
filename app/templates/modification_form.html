@@ -1,30 +1,41 @@
-<!DOCTYPE html> 
+{% import 'macros.j2' as macros %}
+<!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8"> 
-    <title>Update a user</title> <!-- Titre de la page -->
-</head>
-<body>
-    <h1>Update a user</h1> <!-- Titre principal de la page -->
-
-    <!-- Formulaire pour mettre à jour les informations de l'utilisateur -->
-    <form method="POST" action="/user/modify/result">
-        <label for="id">ID :</label> <!-- Champ pour l'ID de l'utilisateur -->
-        <input type="text" id="id" name="id" value="{{ found_user_id }}" readonly><br>
-
-        <label for="name">Name :</label> <!-- Champ pour le nom de l'utilisateur -->
-        <input type="text" id="name" name="name" value="{{ found_user_name }}" required><br>
-
-        <label for="surname">Surname :</label> <!-- Champ pour le prénom de l'utilisateur -->
-        <input type="text" id="surname" name="surname" value="{{ found_user_surname }}" required><br>
-
-        <label for="username">Username :</label> <!-- Champ pour le nom d'utilisateur de l'utilisateur -->
-        <input type="text" id="username" name="username" value="{{ found_user_username }}" required><br>
-
-        <label for="email">Email :</label> <!-- Champ pour l'email de l'utilisateur -->
-        <input type="text" id="email" name="email" value="{{ found_user_email }}" required><br>
-
-        <input type="submit" value="Update"> <!-- Bouton de soumission pour mettre à jour -->
-    </form>
+        {{macros.head("Modify", "Page de modification 2")}} <!-- 1er arg : Nom de l'onglet | 2eme arg : meta de la page-->
+    <body>
+        {{macros.body("API_Utilisateurs" , "1.0.0", navbar)}} <!-- 1er arg : Nom en haut de la navbar | 2eme arg : Version de l'API | 3eme arg : Liste de dictionnaires -->
+        <div class="mb-1">
+            <h1 class="title-2">Update a user</h1>
+        </div>
+        <div class="containerh-50"> 
+            <h2 class="title-3 color-orange" >modify data</h2> 
+            <br> 
+            <form method="POST" action="/user/modify/result">
+                <div class="mb-1">
+                    <label for="id" class="form-label form-label-sm">ID :</label>
+                    <input type="text" id="id" class="form-control form-control-sm" name="id" value="{{ found_user_id }}" readonly><br>
+                </div>
+                <div class="mb-1">
+                    <label for="name" class="form-label">Name :</label>
+                    <input type="text" id="name" class="form-control" name="name" value="{{ found_user_name }}" required><br>
+                </div>
+                <div class="mb-1">
+                    <label for="surname" class="form-label">Surname :</label>
+                    <input type="text" id="surname" class="form-control" name="surname" value="{{ found_user_surname }}" required><br>
+                </div>
+                <div class="mb-1">
+                    <label for="username" class="form-label">Username :</label>
+                    <input type="text" id="username" class="form-control" name="username" value="{{ found_user_username }}" required><br>
+                </div>
+                <div class="mb-1">
+                    <label for="email" class="form-label">Email :</label>
+                    <input type="text" id="email" class="form-control" name="email" value="{{ found_user_email }}" required><br>
+                </div><br>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+        </div>
+    </div><!-- NE PAS SUPPRIMER -->
+</div><!-- NE PAS SUPPRIMER -->
+{{macros.footer({"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}}
 </body>
 </html>
