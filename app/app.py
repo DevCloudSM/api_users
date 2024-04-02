@@ -219,26 +219,85 @@ def affichage_donnée_modifier():
     else:
         return 'La modification des données a échoué', response.status_code
     
+@app.route('/user/delete')
+def suppression_user_int():
+    return test_html
 
-@app.route('/user/delete<int:userId>', methods = ['DELETE'])
-def suppression_user(athleteId): 
-    if os.path.exists('list_user.json') and os.path.getsize('list_athlete.json') > 0:
-        with open('list_athlete.json', 'r', encoding='utf-8') as f:
-            list_athlete = json.load(f)
+@app.route('/user/delete/suite', methods =['POST'])
+def recovery_of_user_to_delete():
+    if request.method == 'POST':
+        data = request.form['data']
+        attribut = request.form['attribut']
+        url = 'http://localhost:5000/user/findby'
+        if attribut == 'name':
+            params = {'name': data}
+        elif attribut == 'surname':
+            params = {'surname': data}
+        elif attribut == 'username':
+            params = {'username': data}
+        elif attribut == 'email':
+            params = {'email': data}
+        else :
+            return jsonify({"error": "No user found matching the search criteria"}), 404
+        
+        found_user = requests.get(url, params=params)
+        
+        if found_user.status_code == 200:
+            found_users = found_user.json()
+            if found_users:
+                first_user = found_users[0]
+                user_id = first_user.get('id')
+                name = first_user.get('name')
+                surname = first_user.get('surname')
+                username = first_user.get('username')
+                email = first_user.get('email')
+                return render_template('test_tableau.html', found_user_id = user_id, found_user_name = name, found_user_surname = surname, found_user_username = username, found_user_email = email)
+            else:
+                return jsonify({"error": "No user found matching the search criteria"}), 404
+        else:
+            return jsonify({"error": "No user found matching the search criteria"}), 404
+    elif request.method == 'GET':
+        return "<p>coucou</p>\n"
+    else:
+        return jsonify({"error": "Method Not Allowed"}), 405
 
-    athlete_found = False
-    for index, athlete in enumerate(list_athlete):
-        if athlete['id'] == athleteId:
-            athlete_found = True
-            del list_athlete[index]
+@app.route('/user/delete/result', methods = ['POST'])
+def affichage_donnée_delete():
+    content_type = request.headers['Content-Type']
+    if content_type == 'application/x-www-form-urlencoded':
+        user_id = request.form.get('id')
+        name = request.form.get('name')
+        surname = request.form.get('surname')
+        username = request.form.get('username')
+        email = request.form.get('email')
+    data_user = {'name': name, 'surname': surname, 'username':username, 'email': email}
+    headers = {'Content-Type': 'application/json'}
+    data=json.dumps(data_user)
+    response = requests.delete(f'http://localhost:5000/user/{user_id}', headers=headers, data=data)
+    if response.status_code == 200:
+        return 'Suppression des données réussie'
+    else:
+        return 'La suppression des données a échoué', response.status_code
+
+@app.route('/user/<int:userId>', methods = ['DELETE'])
+def suppression_user(userId): 
+    if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
+        with open('list_user.json', 'r', encoding='utf-8') as f:
+            list_user = json.load(f)
+
+    user_found = False
+    for index, user in enumerate(list_user):
+        if user['id'] == userId:
+            user_found = True
+            del list_user[index]
             break
 
-    if not athlete_found:
-        return jsonify({"error": "Athlete non trouvé"}), 404
+    if not user_found:
+        return jsonify({"error": "user non trouvé"}), 404
     
     # Enregistrement du fichier JSON mis à jour
-    with open('list_athlete.json', 'w', encoding='utf-8') as f:
-        json.dump(list_athlete, f, ensure_ascii=False, indent=4)
+    with open('list_user.json', 'w', encoding='utf-8') as f:
+        json.dump(list_user, f, ensure_ascii=False, indent=4)
 
     return jsonify({}), 204
 
