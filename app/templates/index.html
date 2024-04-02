@@ -1,17 +1,40 @@
-{% import 'macros.j2' as macros %} <!-- Importation de macros définies dans un autre fichier -->
+{% import 'macros.j2' as macros %}
 <!DOCTYPE html>
 <html lang="fr">
-    {{macros.head(title, "Page d'accueil")}} <!-- Utilisation d'une macro pour générer la balise head de la page avec le titre passé en paramètre -->
-
+        {{macros.head("Accueil", "Page d'accueil")}} <!-- 1er arg : Nom de l'onglet | 2eme arg : meta de la page-->
     <body>
-        {{macros.body(title, version, [{"id":"1", "name":"Create a user"}, {"id":"2", "name":"Edit a user"}, {"id":"2", "name":"Found a user"}, {"id":"2", "name":"Delete a user"}])}} <!-- Utilisation d'une macro pour générer le corps de la page avec des paramètres tels que le titre, la version et une liste d'opérations possibles -->
-
-        <div>
-            <h1>API_User</h1> <!-- Titre de la page -->
-            <h2>Contenue de la base de donnée de l'API utilisateur :</h2> <!-- Sous-titre de la page -->
-            <h4>Base de donnée utilisateur (Accessible par toutes la API) :</h4> <!-- Description de la base de données -->
-        </div>
-
-        {{macros.footer(group, {"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}} <!-- Utilisation d'une macro pour générer le pied de page avec le groupe et des informations de contact -->
+        {{macros.body("API_Utilisateurs" , "1.0.0", navbar)}} <!-- 1er arg : Nom en haut de la navbar | 2eme arg : Version de l'API | 3eme arg : Liste de dictionnaires -->
+                <div class="mb-1">
+                    <h1>API User</h1>
+                    <h3>Content of the user API database:</h3>
+                        <h5>User database (Accessible by all API):</h5>
+                        <div>
+                        <ul>
+                            <li>ID</li>
+                            <li>Username</li>
+                            <li>Name</li>
+                            <li>Surname</li>
+                            <li>Email</li>
+                        </ul>
+                </div>
+                <h3>Purpose of the User API:</h3>
+                <p>The User API aims to provide functionality that allows applications to manage user profiles, including creating, retrieving, updating, and deleting user information.</p>
+                <h5>Main objectives of the User API:</h5>
+                <div>
+                    <ol>
+                        <li>Create user: Allow new users to be registered by providing the necessary information such as: name; first name; pseudo; mail; id.<br> Ideas (If there is time): address; country; departments (in the company); businesses; PP; descriptions</li><br>
+                        <li>Create users randomly.</li><br>
+                        <li>Delete User: Allow applications to delete a specific user from the database, if applicable.</li><br>
+                        <li>Retrieve user information: Provide a method to retrieve details of a specific user based on their unique ID or other search criteria.</li>
+                            <ul class= "mb-2 mt-2">
+                                <li class="font-weight-light">Search function with different search attributes (Like last name, first name...)</li>
+                            </ul>
+                        <li>Update a user's information: Allow apps to update an existing user's information, such as name, email, password, etc.</li><br>
+                        <li><i>Permissions and roles management: Integrate features to manage user permissions and roles, for example allowing administrators to set user access privileges.</i></li><br>
+                    </ol>
+                </div>
+            </div><!-- NE PAS SUPPRIMER -->
+        </div><!-- NE PAS SUPPRIMER -->
+        {{macros.footer({"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}}
     </body>
 </html>
