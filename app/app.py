@@ -6,14 +6,16 @@ app = Flask(__name__)
 navbar_html = [ {"id":"1", "name":"Home", "url":"/"}, 
                 {"id":"2", "name":"Add a user", "url":"/user"},
                 {"id":"3", "name":"Modify a user", "url":"/user/modify"},
-                {"id":"4", "name":"Find a user", "url":"/user/findby"},
-                {"id":"5", "name":"Delete a user", "url":"/user/delete"}]
+                {"id":"4", "name":"Find a user", "url":"/user/findby/search"},
+                {"id":"5", "name":"Delete a user", "url":"/user/delete"}, 
+                {"id":"6", "name":"Show all user", "url":"/test"}]
 
 
 @app.route("/") 
 def accueil(): 
     # Ouvre le fichier index.html lors de la connection à l'api
     return render_template("index.html", navbar=navbar_html)
+
 @app.route('/user')
 def affichage_user():
     # Ouvre la page html qui permet à l'utilisateur de remplir le formulaire de création d'utilisateur
@@ -39,30 +41,16 @@ def post_user():
         username = data.get('username')
         email = data.get('email')
 
-    # Vérifie que le type de contenu est 'application/x-www-form-urlencoded'
-    if request.headers['Content-Type'] != 'application/x-www-form-urlencoded':
-        return jsonify({"error": "Expected form-urlencoded data"}), 415
-
-    # Récupére les données du formulaire HTML
-    name = request.form.get('name')
-    surname = request.form.get('surname')
-    username = request.form.get('username')
-    email = request.form.get('email')
-
     # Vérifie que toutes les données nécessaires sont présentes
     if not name or not surname or not username or not email:
         return jsonify({"error": "Missing data"}), 400
 
-    # Vérifie si le fichier JSON existe et s'il n'est pas vide
     if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
-        # Ouvre le fichier JSON existant pour la lecture
         with open('list_user.json', 'r', encoding='utf-8') as f:
             list_user = json.load(f)
     else:
-        # Si le fichier n'existe pas ou est vide, initialise list_user à une liste vide
         list_user = []
 
-    # Génére un ID unique pour le nouvel user
     user_id = 1
     if list_user:
         # S'il y a des user déjà présents, incrémente l'ID en fonction du nombre d'utilisateur
@@ -87,8 +75,10 @@ def post_user():
     # Converti la liste d'athlètes en JSON
     json_response = json.dumps(list_user, ensure_ascii=False, indent=4)
     
-    # Retourne la réponse JSON
-    return Response(json_response, content_type='application/json'), 200
+    if content_type == 'application/json':
+        return Response(json_response, content_type='application/json'), 200
+    else:   
+        return render_template('add_user_result.html', user=user_data, navbar=navbar_html)
 
 @app.route('/user/<int:userId>', methods = ['GET'])
 def get_user(userId):
@@ -104,6 +94,42 @@ def get_user(userId):
             return jsonify(user), 200
 
     return jsonify({"error": "User not found"}), 404
+
+@app.route('/user/findby/search') 
+def find_user_by_interface():
+    return render_template('findby_search.html', navbar=navbar_html)
+
+@app.route('/user/findby/result', methods = ['POST']) 
+def find_user_by_interface_result():
+    if request.method == 'POST':
+        data = request.form['data']
+        attribut = request.form['attribut']
+        url = 'http://localhost:5000/user/findby'
+        if attribut == 'name':
+            params = {'name': data}
+        elif attribut == 'surname':
+            params = {'surname': data}
+        elif attribut == 'username':
+            params = {'username': data}
+        elif attribut == 'email':
+            params = {'email': data}
+        else :
+            return jsonify({"error": "No user found matching the search criteria"}), 404
+        
+        found_user = requests.get(url, params=params)
+        
+        if found_user.status_code == 200:
+            found_users = found_user.json()
+            if found_users:
+                return render_template('findby_result.html', users=found_users, navbar=navbar_html)
+            else:
+                return jsonify({"error": "No user found matching the search criteria"}), 404
+        else:
+            return jsonify({"error": "No user found matching the search criteria"}), 404
+    elif request.method == 'GET':
+        return "<p>coucou</p>\n"
+    else:
+        return jsonify({"error": "Method Not Allowed"}), 405
 
 @app.route('/user/findby',methods = ['GET']) 
 def get_user_findby():
@@ -137,6 +163,7 @@ def get_user_findby():
         return jsonify(matched_user), 200
     else:
         return jsonify({"error": "No user found matching the search criteria"}), 404
+
 
 @app.route('/user/modify')
 def affichage_recherche_modify():
@@ -301,7 +328,8 @@ def test():
         try:
             # Charger le contenu JSON
             data = json.load(f)
-            return jsonify(data), 200
+            return render_template('findby_result.html', navbar=navbar_html, users=data)
+            # return jsonify(data), 200
         except json.JSONDecodeError as e:
             # Gérer les erreurs de décodage JSON
             return jsonify({"error": str(e)}), 500
