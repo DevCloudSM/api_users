@@ -3,17 +3,21 @@ from flask import Flask, request, jsonify, Response, render_template
 import requests 
 from requests.structures import CaseInsensitiveDict
 app = Flask(__name__) 
+navbar_html = [ {"id":"1", "name":"Home", "url":"/"}, 
+                {"id":"2", "name":"Add a user", "url":"/user"},
+                {"id":"3", "name":"Modify a user", "url":"/user/modify"},
+                {"id":"4", "name":"Find a user", "url":"/user/findby"},
+                {"id":"5", "name":"Delete a user", "url":"/user/delete"}]
+
 
 @app.route("/") 
 def accueil(): 
     # Ouvre le fichier index.html lors de la connection à l'api
-    return render_template("index.html", title="USER API", version="1.0.0", group=["COURNAC Amaury", "GARAT Kerrian", "DANIEL Aronn"])
-    return index_html 
-
+    return render_template("index.html", navbar=navbar_html)
 @app.route('/user')
 def affichage_user():
     # Ouvre la page html qui permet à l'utilisateur de remplir le formulaire de création d'utilisateur
-    return user_test_html
+    return render_template("add_user.html", navbar=navbar_html)
 
 @app.route('/user',methods = ['POST']) 
 def post_user():
@@ -136,7 +140,7 @@ def get_user_findby():
 
 @app.route('/user/modify')
 def affichage_recherche_modify():
-    return modification_html
+    return render_template("modification_search.html", navbar=navbar_html)
 
 @app.route('/user/modify/suite', methods =['POST'])
 def recovery_of_user_to_modify():
@@ -167,7 +171,7 @@ def recovery_of_user_to_modify():
                 surname = first_user.get('surname')
                 username = first_user.get('username')
                 email = first_user.get('email')
-                return render_template('modification_form.html', found_user_id = user_id, found_user_name=name, found_user_surname=surname, found_user_username=username, found_user_email=email)
+                return render_template('modification_form.html', found_user_id = user_id, found_user_name=name, found_user_surname=surname, found_user_username=username, found_user_email=email, navbar=navbar_html)
             else:
                 return jsonify({"error": "No user found matching the search criteria"}), 404
         else:
@@ -215,13 +219,13 @@ def affichage_donnée_modifier():
     data=json.dumps(data_user)
     response = requests.patch(f'http://localhost:5000/user/{user_id}', headers=headers, data=data)
     if response.status_code == 200:
-        return 'Modification des données réussie'
+        return render_template("modification_result.html", navbar = navbar_html)
     else:
         return 'La modification des données a échoué', response.status_code
     
 @app.route('/user/delete')
-def suppression_user_int():
-    return test_html
+def suppression_user_interface():
+    return render_template('delete_search.html', navbar=navbar_html)
 
 @app.route('/user/delete/suite', methods =['POST'])
 def recovery_of_user_to_delete():
@@ -237,7 +241,7 @@ def recovery_of_user_to_delete():
             params = {'username': data}
         elif attribut == 'email':
             params = {'email': data}
-        else :
+        else:
             return jsonify({"error": "No user found matching the search criteria"}), 404
         
         found_user = requests.get(url, params=params)
@@ -245,13 +249,8 @@ def recovery_of_user_to_delete():
         if found_user.status_code == 200:
             found_users = found_user.json()
             if found_users:
-                first_user = found_users[0]
-                user_id = first_user.get('id')
-                name = first_user.get('name')
-                surname = first_user.get('surname')
-                username = first_user.get('username')
-                email = first_user.get('email')
-                return render_template('test_tableau.html', found_user_id = user_id, found_user_name = name, found_user_surname = surname, found_user_username = username, found_user_email = email)
+                # Utilisation de render_template_string pour générer le tableau HTML
+                return render_template('delete_table.html', users=found_users, navbar=navbar_html)
             else:
                 return jsonify({"error": "No user found matching the search criteria"}), 404
         else:
@@ -266,16 +265,10 @@ def affichage_donnée_delete():
     content_type = request.headers['Content-Type']
     if content_type == 'application/x-www-form-urlencoded':
         user_id = request.form.get('id')
-        name = request.form.get('name')
-        surname = request.form.get('surname')
-        username = request.form.get('username')
-        email = request.form.get('email')
-    data_user = {'name': name, 'surname': surname, 'username':username, 'email': email}
     headers = {'Content-Type': 'application/json'}
-    data=json.dumps(data_user)
-    response = requests.delete(f'http://localhost:5000/user/{user_id}', headers=headers, data=data)
-    if response.status_code == 200:
-        return 'Suppression des données réussie'
+    response = requests.delete(f'http://localhost:5000/user/{user_id}', headers=headers)
+    if response.status_code == 204:
+        return render_template("delete_result.html", navbar=navbar_html)
     else:
         return 'La suppression des données a échoué', response.status_code
 
@@ -293,7 +286,7 @@ def suppression_user(userId):
             break
 
     if not user_found:
-        return jsonify({"error": "user non trouvé"}), 404
+        return jsonify({"error": "User non trouvé"}), 404
     
     # Enregistrement du fichier JSON mis à jour
     with open('list_user.json', 'w', encoding='utf-8') as f:
@@ -312,81 +305,6 @@ def test():
         except json.JSONDecodeError as e:
             # Gérer les erreurs de décodage JSON
             return jsonify({"error": str(e)}), 500
-
-# Page d'accueil
-index_html = """<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>API_user</title>
-</head>
-<body>
-    <h1>User Management</h1>
-    <h2>Please select one option</h2>
-    <ul>
-        <li><a href="/user">Add a user</a></li>
-        <li><a href="/user/modify">Modify a user</a></li>
-        <li><a href="/user/findby">Find a user</a></li>
-        <li><a href="/user/delete">Delete a user</a></li>
-    </ul>
-</body>
-</html>"""
-
-# page pour la route /user 'PATCH'
-user_test_html = """<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>API user</title>
-</head>
-    <body>
-        <h1>User management</h1>
-        <h2>Add a user : </h2>
-            <form action="/user" method="POST" enctype="application/json">
-                <label for="disease">Name : </label>
-                <input type="text" name="name" id="name">
-                <br>
-                <label for="disease">Surname : </label>
-                <input type="text" name="surname" id="surname">
-                <br>
-                <label for="disease">username : </label>
-                <input type="text" name="username" id="username">
-                <br>
-                <label for="disease">email : </label>
-                <input type="text" name="email" id="email">
-                <br>
-                <input type="submit" value="Add">
-            </form>
-    </body>
-</html>"""
-
-# page pour la route /user/modify
-modification_html = """<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Search for a user to edit it</title>
-</head>
-<body>
-    <h1>Search for a user to edit it</h1>
-    <h3>Please select a type of data to research</h3>
-    <form action=/user/modify/suite method="POST">
-        <input type="radio" id="name" name="attribut" value="name">
-        <label for="name">Name</label>
-        <input type="radio" id="surname" name="attribut" value="surname">
-        <label for="surname">Surname</label>
-        <input type="radio" id="username" name="attribut" value="username">
-        <label for="username">Username</label>
-        <input type="radio" id="email" name="attribut" value="email">
-        <label for="email">Email</label><br><br>
-        <label for="data">Data :</label>
-        <input type="text" id="data" name="data" required><br>
-        
-        <input type="submit" value="Search">
-    </form>
-</body>
-</html>"""
-
 
 if __name__ == "__main__": 
     app.run(debug=True)
