@@ -8,7 +8,7 @@ navbar_html = [ {"id":"1", "name":"Home", "url":"/"},
                 {"id":"3", "name":"Modify a user", "url":"/user/modify"},
                 {"id":"4", "name":"Find a user", "url":"/user/findby/search"},
                 {"id":"5", "name":"Delete a user", "url":"/user/delete"}, 
-                {"id":"6", "name":"Show all user", "url":"/test"}]
+                {"id":"6", "name":"Show all users", "url":"/test"}]
 
 
 @app.route("/") 
