@@ -1,0 +1,30 @@
+{% import 'macros.j2' as macros %}
+<!DOCTYPE html>
+<html lang="fr">
+        {{macros.head("Add", "Page d'ajout")}} <!-- 1er arg : Nom de l'onglet | 2eme arg : meta de la page-->
+    <body>
+        {{macros.body("API_Utilisateurs" , "1.0.0", navbar)}} <!-- 1er arg : Nom en haut de la navbar | 2eme arg : Version de l'API | 3eme arg : Liste de dictionnaires -->
+    <h1 class="title-2">User management</h1>
+    <p>User created successfully <img src="{{ url_for('static', filename='/images/check.png') }} " alt="check" width="30" height="30" class="rounded-circle"></p>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Username</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.surname }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
