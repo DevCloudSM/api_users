@@ -1,23 +1,30 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Update a user</title>
+    <meta charset="UTF-8"> 
+    <title>Update a user</title> <!-- Titre de la page -->
 </head>
 <body>
-    <h1>Update a user</h1>
+    <h1>Update a user</h1> <!-- Titre principal de la page -->
+
+    <!-- Formulaire pour mettre à jour les informations de l'utilisateur -->
     <form method="POST" action="/user/modify/result">
-        <label for="id">ID :</label>
+        <label for="id">ID :</label> <!-- Champ pour l'ID de l'utilisateur -->
         <input type="text" id="id" name="id" value="{{ found_user_id }}" readonly><br>
-        <label for="name">Name :</label>
+
+        <label for="name">Name :</label> <!-- Champ pour le nom de l'utilisateur -->
         <input type="text" id="name" name="name" value="{{ found_user_name }}" required><br>
-        <label for="surname">Surname :</label>
+
+        <label for="surname">Surname :</label> <!-- Champ pour le prénom de l'utilisateur -->
         <input type="text" id="surname" name="surname" value="{{ found_user_surname }}" required><br>
-        <label for="username">Username :</label>
+
+        <label for="username">Username :</label> <!-- Champ pour le nom d'utilisateur de l'utilisateur -->
         <input type="text" id="username" name="username" value="{{ found_user_username }}" required><br>
-        <label for="email">Email :</label>
+
+        <label for="email">Email :</label> <!-- Champ pour l'email de l'utilisateur -->
         <input type="text" id="email" name="email" value="{{ found_user_email }}" required><br>
-        <input type="submit" value="Update">
+
+        <input type="submit" value="Update"> <!-- Bouton de soumission pour mettre à jour -->
     </form>
 </body>
 </html>

@@ -1,15 +1,17 @@
-{% import 'macros.j2' as macros %}
+{% import 'macros.j2' as macros %} <!-- Importation de macros définies dans un autre fichier -->
 <!DOCTYPE html>
 <html lang="fr">
-        {{macros.head(title, "Page d'accueil")}}
+    {{macros.head(title, "Page d'accueil")}} <!-- Utilisation d'une macro pour générer la balise head de la page avec le titre passé en paramètre -->
+
     <body>
-        {{macros.body(title, version, [{"id":"1", "name":"Create a user"}, {"id":"2", "name":"Edit a user"}, {"id":"2", "name":"Found a user"}, {"id":"2", "name":"Delete a user"}])}}
+        {{macros.body(title, version, [{"id":"1", "name":"Create a user"}, {"id":"2", "name":"Edit a user"}, {"id":"2", "name":"Found a user"}, {"id":"2", "name":"Delete a user"}])}} <!-- Utilisation d'une macro pour générer le corps de la page avec des paramètres tels que le titre, la version et une liste d'opérations possibles -->
+
         <div>
-            <h1>API_User</h1>
-            <h2>Contenue de la base de donnée de l'API utilisateur :</h2>
-            <h4>Base de donnée utilisateur (Accessible par toutes la API) :</h4>
+            <h1>API_User</h1> <!-- Titre de la page -->
+            <h2>Contenue de la base de donnée de l'API utilisateur :</h2> <!-- Sous-titre de la page -->
+            <h4>Base de donnée utilisateur (Accessible par toutes la API) :</h4> <!-- Description de la base de données -->
         </div>
 
-        {{macros.footer(group, {"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}}
+        {{macros.footer(group, {"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}} <!-- Utilisation d'une macro pour générer le pied de page avec le groupe et des informations de contact -->
     </body>
 </html>
