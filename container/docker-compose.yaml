@@ -6,7 +6,7 @@ services:
     environment:  # Définition des variables d'environnement pour le conteneur
       - POSTGRES_PASSWORD=bonjour  # Définition de la variable d'environnement POSTGRES_PASSWORD avec la valeur "bonjour"
     ports:  # Définition du mappage des ports entre le système hôte et le conteneur
-      - "6033:3306"  # Mappage du port 6033 du système hôte sur le port 3306 du conteneur PostgreSQL
+      - "5432:5432"  # Mappage du port 6033 du système hôte sur le port 3306 du conteneur PostgreSQL
     networks:
       - network_user
       
