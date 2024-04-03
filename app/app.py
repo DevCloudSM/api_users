@@ -321,8 +321,8 @@ def suppression_user(userId):
 
     return jsonify({}), 204
 
-@app.route('/test', methods=['GET'])
-def test():
+@app.route('/affichage', methods=['GET'])
+def affichage():
     # Ouvrir le fichier JSON pour lecture
     with open('list_user.json', 'r', encoding='utf-8') as f:
         try:
