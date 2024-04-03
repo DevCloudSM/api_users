@@ -1,5 +1,5 @@
 -- Crée la base de données user_db
-CREATE DATABASE IF NOT EXISTS user_db;
+CREATE DATABASE user_db;
 
 -- Sélectionne la base de données user_db
 \c user_db;

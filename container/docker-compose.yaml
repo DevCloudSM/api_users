@@ -7,9 +7,16 @@ services:
       - POSTGRES_PASSWORD=bonjour  # Définition de la variable d'environnement POSTGRES_PASSWORD avec la valeur "bonjour"
     ports:  # Définition du mappage des ports entre le système hôte et le conteneur
       - "6033:3306"  # Mappage du port 6033 du système hôte sur le port 3306 du conteneur PostgreSQL
+    networks:
+      - network_user
+      
   alpine_application:
     container_name: alpine_app
     build: ./alpine
     restart: always
     ports:
       - "5000:5000"
+    networks:
+      - network_user
+networks:
+  network_user:  # Définit le réseau nommé my_network
