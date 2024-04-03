@@ -4,9 +4,9 @@
 
 **Base de donnée utilisateur (Accessible par toutes la API) :**
  - ID
- - Username
- - Name
  - Surname
+ - Name
+ - Username
  - Mail
 
 ## Objectif de l'API Utilisateur :
