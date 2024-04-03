@@ -24,9 +24,9 @@ L'API Utilisateur a pour objectif de fournir des fonctionnalités permettant aux
 
 4. Supprimer un utilisateur : Permettre aux applications de supprimer un utilisateur spécifique de la base de données, le cas échéant.
    
-5. Récupérer les informations d'un utilisateur : Fournir une méthode pour récupérer les détails d'un utilisateur spécifique en fonction de son identifiant unique ou d'autres critères de recherche.
-      - Fonction recherche avec différent attribut de recherche (Comme nom,prenom...)
+5. Récupérer les informations d'un utilisateur : méthode pour récupérer les détails d'un utilisateur spécifique en fonction de son identifiant unique ou d'autres critères de recherche.
+      - Fonction recherche avec différent attribut de recherche (Comme nom,prénom...)
 
-7. Mettre à jour les informations d'un utilisateur : Autoriser les applications à mettre à jour les informations d'un utilisateur existant, telles que le nom, l'adresse e-mail, le mot de passe, etc.
+7. Mettre à jour les informations d'un utilisateur : Autoriser les applications à mettre à jour les informations d'un utilisateur existant, telles que le nom, l'adresse e-mail, etc.
 
 8. Gestion des autorisations et des rôles : Intégrer des fonctionnalités pour gérer les autorisations et les rôles des utilisateurs, en permettant par exemple aux administrateurs de définir les privilèges d'accès des utilisateurs.
