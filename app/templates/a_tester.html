@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    {{macros.head("database, "Page base de données")}} <!-- 1er arg : Nom de l'onglet | 2eme arg : meta de la page-->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,7 @@
 </head>
 
 <body>
+    {{macros.body("API_Utilisateurs" , "1.0.0", navbar)}} <!-- 1er arg : Nom en haut de la navbar | 2eme arg : Version de l'API | 3eme arg : Liste de dictionnaires -->
     <h1>User Information</h1>
     <table border="1">
         <thead>
@@ -56,6 +57,7 @@
             ?>
         </tbody>
     </table>
+    {{macros.footer({"email": "test@test.com", "phone": "+33 47 89 57 78", "address": "bla"})}}
 </body>
 
 </html>
