@@ -15,25 +15,24 @@ conn = psycopg2.connect(
     port="5432"
 )
 cursor = conn.cursor()
-navbar_html = [ {"id":"1", "name":"Home", "url":"/"}, 
-                {"id":"2", "name":"Add a user", "url":"/user/add"},
-                {"id":"3", "name":"Modify a user", "url":"/user/modify"},
-                {"id":"4", "name":"Find a user", "url":"/user/findby/search"},
-                {"id":"5", "name":"Delete a user", "url":"/user/delete"}, 
-                {"id":"6", "name":"Show all users", "url":"/user/show"}]
+navbar_html = [ {"id":"1", "name":"Home", "url":"/users"}, 
+                {"id":"2", "name":"Add a user", "url":"/users/user/add"},
+                {"id":"3", "name":"Modify a user", "url":"/users/user/modify"},
+                {"id":"4", "name":"Find a user", "url":"/users/user/findby/search"},
+                {"id":"5", "name":"Delete a user", "url":"/users/user/delete"}, 
+                {"id":"6", "name":"Show all users", "url":"/users/user/show"}]
 
-
-@app.route("/") 
+@app.route("/users") 
 def accueil(): 
     # Ouvre le fichier index.html lors de la connection à l'api
     return render_template("index.html", navbar=navbar_html)
 
-@app.route('/user/add', methods = ['GET'])
+@app.route('/users/user/add', method=['GET'])
 def affichage_user():
     # Ouvre la page html qui permet à l'utilisateur de remplir le formulaire de création d'utilisateur
     return render_template("add_user.html", navbar=navbar_html)
 
-@app.route('/user/add',methods = ['POST']) 
+@app.route('/users/user/add',methods = ['POST']) 
 def post_user():
     content_type = request.headers['Content-Type']
 
@@ -83,13 +82,13 @@ def post_user():
         return jsonify({"error": str(e)}), 500
     
 
-@app.route('/user/<int:userId>', methods = ['GET'])
+@app.route('/users/user/<int:userId>', methods = ['GET'])
 def get_user(userId):
     # Récupérer l'utilisateur à partir de la base de données
     try:
         cursor.execute(
             """
-            SELECT * FROM users WHERE id = %s LIMIT 1000;
+            SELECT * FROM users WHERE id = %s;
             """,
             (userId,)
         )
@@ -108,11 +107,11 @@ def get_user(userId):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/user/findby/search') 
+@app.route('/users/user/findby/search') 
 def find_user_by_interface():
     return render_template('findby_search.html', navbar=navbar_html)
 
-@app.route('/user/findby/result', methods = ['POST']) 
+@app.route('/users/user/findby/result', methods = ['POST']) 
 def find_user_by_interface_result():
     if request.method == 'POST':
         data = request.form['data']
@@ -144,7 +143,7 @@ def find_user_by_interface_result():
     else:
         return jsonify({"error": "Method Not Allowed"}), 405
 
-@app.route('/user/findby',methods = ['GET']) 
+@app.route('/users/user/findby',methods = ['GET']) 
 def get_user_findby():
     # Récupérer les paramètres de requête
     user_id = request.args.get('id')
@@ -197,11 +196,11 @@ def get_user_findby():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/user/modify')
+@app.route('/users/user/modify')
 def affichage_recherche_modify():
     return render_template("modification_search.html", navbar=navbar_html)
 
-@app.route('/user/modify/suite', methods =['POST'])
+@app.route('/users/user/modify/suite', methods =['POST'])
 def recovery_of_user_to_modify():
     if request.method == 'POST':
         data = request.form['data']
@@ -240,7 +239,7 @@ def recovery_of_user_to_modify():
     else:
         return jsonify({"error": "Method Not Allowed"}), 405
         
-@app.route('/user/<int:userId>', methods = ['PATCH'])
+@app.route('/users/user/<int:userId>', methods = ['PATCH'])
 def modification_user(userId): 
      # Recherche de l'utilisateur à modifier
     cursor.execute("SELECT * FROM users WHERE id = %s", (userId,))
@@ -266,7 +265,8 @@ def modification_user(userId):
 
     return jsonify(user), 200
 
-@app.route('/user/modify/result', methods = ['POST'])
+
+@app.route('/users/user/modify/result', methods = ['POST'])
 def affichage_donnée_modifier():
     content_type = request.headers['Content-Type']
     if content_type == 'application/x-www-form-urlencoded':
@@ -284,11 +284,11 @@ def affichage_donnée_modifier():
     else:
         return 'La modification des données a échoué', response.status_code
     
-@app.route('/user/delete')
+@app.route('/users/user/delete')
 def suppression_user_interface():
     return render_template('delete_search.html', navbar=navbar_html)
 
-@app.route('/user/delete/suite', methods =['POST'])
+@app.route('/users/user/delete/suite', methods =['POST'])
 def recovery_of_user_to_delete():
     if request.method == 'POST':
         data = request.form['data']
@@ -321,7 +321,7 @@ def recovery_of_user_to_delete():
     else:
         return jsonify({"error": "Method Not Allowed"}), 405
 
-@app.route('/user/delete/result', methods = ['POST'])
+@app.route('/users/user/delete/result', methods = ['POST'])
 def affichage_donnée_delete():
     content_type = request.headers['Content-Type']
     if content_type == 'application/x-www-form-urlencoded':
@@ -333,7 +333,7 @@ def affichage_donnée_delete():
     else:
         return 'La suppression des données a échoué', response.status_code
 
-@app.route('/user/<int:userId>', methods = ['DELETE'])
+@app.route('/users/user/<int:userId>', methods = ['DELETE'])
 def suppression_user(userId): 
     try:
         # Supprimer l'utilisateur de la base de données
@@ -349,8 +349,7 @@ def suppression_user(userId):
         conn.rollback()
         return jsonify({"error": str(e)}), 500
 
-
-@app.route('/user', methods=['GET'])
+@app.route('/users/user', methods=['GET'])
 def affichage():
     try:
         # Exécuter une requête pour sélectionner toutes les lignes de la table users
@@ -374,11 +373,11 @@ def affichage():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/user/show', methods=['GET'])
+@app.route('/users/user/show', methods=['GET'])
 def affichage_http():
     try:
         # Exécuter une requête pour sélectionner toutes les lignes de la table users
-        cursor.execute("SELECT * FROM users")
+        cursor.execute("SELECT * FROM users LIMIT 1000")
         users = cursor.fetchall()
         if users:
             # Convertir les résultats en une liste de dictionnaires
@@ -399,6 +398,6 @@ def affichage_http():
         return jsonify({"error": str(e)}), 500
 
 
-            
+
 if __name__ == "__main__": 
     app.run(host='0.0.0.0', port='5000', debug=True)
