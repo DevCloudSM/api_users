@@ -5,6 +5,7 @@ FROM alpine:3.19.1
 RUN apk add py3-flask
 RUN apk add py3-requests
 RUN apk add py3-psycopg2
+RUN apk add py3-jwt
 RUN apk add git
 
 RUN git clone https://github.com/DevCloudSM/api_users.git
