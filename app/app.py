@@ -89,7 +89,7 @@ def get_user(userId):
     try:
         cursor.execute(
             """
-            SELECT * FROM users WHERE id = %s;
+            SELECT * FROM users WHERE id = %s LIMIT 1000;
             """,
             (userId,)
         )
@@ -353,7 +353,7 @@ def suppression_user(userId):
 def affichage():
     try:
         # Exécuter une requête pour sélectionner toutes les lignes de la table users
-        cursor.execute("SELECT * FROM users")
+        cursor.execute("SELECT * FROM users LIMIT 1000;")
         users = cursor.fetchall()
         if users:
             # Convertir les résultats en une liste de dictionnaires
