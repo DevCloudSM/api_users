@@ -1,8 +1,20 @@
-import json, os
+import json, os, requests
+import psycopg2
+from psycopg2 import sql
 from flask import Flask, request, jsonify, Response, render_template
-import requests 
+
 from requests.structures import CaseInsensitiveDict
 app = Flask(__name__) 
+
+# Connexion à la base de données PostgreSQL
+conn = psycopg2.connect(
+    dbname="user_db",
+    user="postgres",
+    password="bonjour",
+    host="localhost",
+    port="5432"
+)
+cursor = conn.cursor()
 navbar_html = [ {"id":"1", "name":"Home", "url":"/"}, 
                 {"id":"2", "name":"Add a user", "url":"/user"},
                 {"id":"3", "name":"Modify a user", "url":"/user/modify"},
@@ -45,55 +57,56 @@ def post_user():
     if not name or not surname or not username or not email:
         return jsonify({"error": "Missing data"}), 400
 
-    if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
-        with open('list_user.json', 'r', encoding='utf-8') as f:
-            list_user = json.load(f)
-    else:
-        list_user = []
-
-    user_id = 1
-    if list_user:
-        # S'il y a des user déjà présents, incrémente l'ID en fonction du nombre d'utilisateur
-        user_id = max(user['id'] for user in list_user) + 1
-
-    # Crée un dictionnaire Python avec les données récupérées et l'ID généré
-    user_data = {
-        'id': user_id,
-        'name': name,
-        'surname': surname,
-        'username': username,
-        'email': email
-    }
-
-    # Ajoute les nouvelles données à la liste python
-    list_user.append(user_data)
-
-    # Réécri le fichier JSON avec la liste mise à jour
-    with open('list_user.json', 'w', encoding='utf-8') as f:
-        json.dump(list_user, f, ensure_ascii=False, indent=4)
-
-    # Converti la liste d'athlètes en JSON
-    json_response = json.dumps(list_user, ensure_ascii=False, indent=4)
+    # Insérer les données dans la base de données
+    try:
+        cursor.execute(
+            """
+            INSERT INTO users (name, surname, username, email) VALUES (%s, %s, %s, %s) RETURNING id;
+            """,
+            (name, surname, username, email)
+        )
+        user_id = cursor.fetchone()[0]
+        conn.commit()
+        user_data = {
+            'id': user_id,
+            'name': name,
+            'surname': surname,
+            'username': username,
+            'email': email
+        }
+        if content_type == 'application/json':
+            return jsonify(user_data), 201
+        else:   
+            return render_template('add_user_result.html', user=user_data, navbar=navbar_html)
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
     
-    if content_type == 'application/json':
-        return Response(json_response, content_type='application/json'), 200
-    else:   
-        return render_template('add_user_result.html', user=user_data, navbar=navbar_html)
 
 @app.route('/user/<int:userId>', methods = ['GET'])
 def get_user(userId):
-    if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
-        with open('list_user.json', 'r', encoding='utf-8') as f:
-            list_user = json.load(f)
-    else:
-        return jsonify({"error": "User not found"}), 404
-
-    # Recherche l'athlète avec l'ID
-    for user in list_user:
-        if user['id'] == userId:
-            return jsonify(user), 200
-
-    return jsonify({"error": "User not found"}), 404
+    # Récupérer l'utilisateur à partir de la base de données
+    try:
+        cursor.execute(
+            """
+            SELECT * FROM users WHERE id = %s;
+            """,
+            (userId,)
+        )
+        user = cursor.fetchone()
+        if user:
+            user_data = {
+                'id': user[0],
+                'name': user[1],
+                'surname': user[2],
+                'username': user[3],
+                'email': user[4]
+            }
+            return jsonify(user_data), 200
+        else:
+            return jsonify({"error": "User not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/user/findby/search') 
 def find_user_by_interface():
@@ -133,36 +146,55 @@ def find_user_by_interface_result():
 
 @app.route('/user/findby',methods = ['GET']) 
 def get_user_findby():
-    # Récupére les paramètres de requête
+    # Récupérer les paramètres de requête
     user_id = request.args.get('id')
     name = request.args.get('name')
     surname = request.args.get('surname')
     username = request.args.get('username')
     email = request.args.get('email')
 
-    if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
-        with open('list_user.json', 'r', encoding='utf-8') as f:
-            list_user = json.load(f)
-    else:
-        return jsonify({"error": "No user found"}), 404
-
-    # Initialise une liste pour stocker les athlètes correspondant aux critères de recherche
+    # Initialiser une liste pour stocker les utilisateurs correspondant aux critères de recherche
     matched_user = []
 
-    # Parcourir tous les athlètes pour les filtrer en fonction des critères de recherche
-    for user in list_user:
-        if (user_id is None or str(user['id']) == user_id) and \
-           (username is None or user['username'] == username) and \
-           (name is None or user['name'] == name) and \
-           (surname is None or user['surname'] == surname) and \
-           (email is None or str(user['email']) == email):
-            matched_user.append(user)
-
-    # Vérifie s'il y a des athlètes correspondant aux critères de recherche
-    if matched_user:
-        return jsonify(matched_user), 200
-    else:
-        return jsonify({"error": "No user found matching the search criteria"}), 404
+    # Construire la requête SQL en fonction des critères de recherche fournis
+    query = sql.SQL("SELECT * FROM users WHERE true")
+    params = []
+    if user_id:
+        query += sql.SQL(" AND id = %s")
+        params.append(user_id)
+    if name:
+        query += sql.SQL(" AND LOWER(name) = LOWER(%s)")
+        params.append(name)
+    if surname:
+        query += sql.SQL(" AND LOWER(surname) = LOWER(%s)")
+        params.append(surname)
+    if username:
+        query += sql.SQL(" AND LOWER(username) = LOWER(%s)")
+        params.append(username)
+    if email:
+        query += sql.SQL(" AND LOWER(email) = LOWER(%s)")
+        params.append(email)
+    try:
+        print(query)
+        print(params)
+        cursor.execute(query, params)
+        users = cursor.fetchall()
+        if users:
+            for user in users:
+                user_data = {
+                    'id': user[0],
+                    'name': user[1],
+                    'surname': user[2],
+                    'username': user[3],
+                    'email': user[4]
+                }
+                matched_user.append(user_data)
+            return jsonify(matched_user), 200
+        else:
+            return jsonify({"error": "No user found matching the search criteria"}), 404
+    except Exception as e:
+        print(e) 
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/user/modify')
@@ -301,38 +333,42 @@ def affichage_donnée_delete():
 
 @app.route('/user/<int:userId>', methods = ['DELETE'])
 def suppression_user(userId): 
-    if os.path.exists('list_user.json') and os.path.getsize('list_user.json') > 0:
-        with open('list_user.json', 'r', encoding='utf-8') as f:
-            list_user = json.load(f)
-
-    user_found = False
-    for index, user in enumerate(list_user):
-        if user['id'] == userId:
-            user_found = True
-            del list_user[index]
-            break
-
-    if not user_found:
-        return jsonify({"error": "User non trouvé"}), 404
-    
-    # Enregistrement du fichier JSON mis à jour
-    with open('list_user.json', 'w', encoding='utf-8') as f:
-        json.dump(list_user, f, ensure_ascii=False, indent=4)
-
-    return jsonify({}), 204
+    try:
+        # Supprimer l'utilisateur de la base de données
+        cursor.execute(
+            """
+            DELETE FROM users WHERE id = %s;
+            """,
+            (userId,)
+        )
+        conn.commit()
+        return jsonify({}), 204
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/affichage', methods=['GET'])
 def affichage():
-    # Ouvrir le fichier JSON pour lecture
-    with open('list_user.json', 'r', encoding='utf-8') as f:
-        try:
-            # Charger le contenu JSON
-            data = json.load(f)
-            return render_template('findby_result.html', navbar=navbar_html, users=data)
-            # return jsonify(data), 200
-        except json.JSONDecodeError as e:
-            # Gérer les erreurs de décodage JSON
-            return jsonify({"error": str(e)}), 500
-
+    try:
+        # Exécuter une requête pour sélectionner toutes les lignes de la table users
+        cursor.execute("SELECT * FROM users")
+        users = cursor.fetchall()
+        if users:
+            # Convertir les résultats en une liste de dictionnaires
+            users_data = []
+            for user in users:
+                user_data = {
+                    'id': user[0],
+                    'name': user[1],
+                    'surname': user[2],
+                    'username': user[3],
+                    'email': user[4]
+                }
+                users_data.append(user_data)
+            return render_template('findby_result.html', navbar=navbar_html, users=users_data)
+        else:
+            return jsonify({"error": "No users found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 if __name__ == "__main__": 
     app.run(host='0.0.0.0', port='5000', debug=True)
