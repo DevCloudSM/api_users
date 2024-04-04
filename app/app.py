@@ -27,7 +27,7 @@ def accueil():
     # Ouvre le fichier index.html lors de la connection à l'api
     return render_template("index.html", navbar=navbar_html)
 
-@app.route('/users/user/add', method=['GET'])
+@app.route('/users/user/add', methods=['GET'])
 def affichage_user():
     # Ouvre la page html qui permet à l'utilisateur de remplir le formulaire de création d'utilisateur
     return render_template("add_user.html", navbar=navbar_html)
