@@ -146,7 +146,7 @@ def get_user(userId):
 @app.route('/users/user/findby/search') 
 def find_user_by_interface():
     return render_template('findby_search.html', navbar=navbar_html)
-
+#######
 @app.route('/users/user/findby/result', methods = ['POST']) 
 def find_user_by_interface_result():
     if request.method == 'POST':
