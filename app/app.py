@@ -242,25 +242,27 @@ def recovery_of_user_to_modify():
         
 @app.route('/user/<int:userId>', methods = ['PATCH'])
 def modification_user(userId): 
-    with open('list_user.json', 'r', encoding='utf-8') as f:
-        list_user = json.load(f)
-    # Recherche de l'utilisateur à modifier
-    user = next((a for a in list_user if a['id'] == userId), None)
+     # Recherche de l'utilisateur à modifier
+    cursor.execute("SELECT * FROM users WHERE id = %s", (userId,))
+    user = cursor.fetchone()
     if not user:
-        return jsonify({"error": "User not find"}), 404
+        return jsonify({"error": "User not found"}), 404
 
     # Récupération des données JSON de la requête
-    data = {} 
+    data = {}
     if request.is_json:
         data = request.get_json()
 
     # Mise à jour des informations de l'utilisateur
     for key, value in data.items():
-        user[key] = value
+        cursor.execute(f"UPDATE users SET {key} = %s WHERE id = %s", (value, userId))
 
-    # Enregistrement de la liste des users modifiée
-    with open('list_user.json', 'w', encoding='utf-8') as f:
-        json.dump(list_user, f)
+    # Enregistrement des modifications
+    conn.commit()
+
+    # Récupération des informations de l'utilisateur mis à jour
+    cursor.execute("SELECT * FROM users WHERE id = %s", (userId,))
+    user = cursor.fetchone()
 
     return jsonify(user), 200
 
