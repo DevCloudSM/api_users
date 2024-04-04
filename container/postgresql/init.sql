@@ -15,5 +15,5 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Insère des données initiales dans la table des utilisateurs
 INSERT INTO users (name, surname, username, email) VALUES
-    ('Doe', 'John', 'John_Doe', 'john@example.com'),
-    ('Smith', 'Jane', 'Jane_Smith', 'jane@example.com');
+    ('admin', 'admin', 'krbadmin', 'krbadmin@admin.com'),
+    ('Doe', 'John', 'John_Doe', 'john@example.com');
