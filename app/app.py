@@ -16,11 +16,11 @@ conn = psycopg2.connect(
 )
 cursor = conn.cursor()
 navbar_html = [ {"id":"1", "name":"Home", "url":"/"}, 
-                {"id":"2", "name":"Add a user", "url":"/user"},
+                {"id":"2", "name":"Add a user", "url":"/user/add"},
                 {"id":"3", "name":"Modify a user", "url":"/user/modify"},
                 {"id":"4", "name":"Find a user", "url":"/user/findby/search"},
                 {"id":"5", "name":"Delete a user", "url":"/user/delete"}, 
-                {"id":"6", "name":"Show all users", "url":"/affichage"}]
+                {"id":"6", "name":"Show all users", "url":"/user"}]
 
 
 @app.route("/") 
@@ -28,12 +28,12 @@ def accueil():
     # Ouvre le fichier index.html lors de la connection à l'api
     return render_template("index.html", navbar=navbar_html)
 
-@app.route('/user')
+@app.route('/user/add', methods = ['GET'])
 def affichage_user():
     # Ouvre la page html qui permet à l'utilisateur de remplir le formulaire de création d'utilisateur
     return render_template("add_user.html", navbar=navbar_html)
 
-@app.route('/user',methods = ['POST']) 
+@app.route('/user/add',methods = ['POST']) 
 def post_user():
     content_type = request.headers['Content-Type']
 
@@ -349,28 +349,56 @@ def suppression_user(userId):
         conn.rollback()
         return jsonify({"error": str(e)}), 500
 
-@app.route('/affichage', methods=['GET'])
+@app.route('/user', methods=['GET'])
 def affichage():
-    try:
-        # Exécuter une requête pour sélectionner toutes les lignes de la table users
-        cursor.execute("SELECT * FROM users LIMIT 1000;")
-        users = cursor.fetchall()
-        if users:
-            # Convertir les résultats en une liste de dictionnaires
-            users_data = []
-            for user in users:
-                user_data = {
-                    'id': user[0],
-                    'name': user[1],
-                    'surname': user[2],
-                    'username': user[3],
-                    'email': user[4]
-                }
-                users_data.append(user_data)
-            return render_template('findby_result.html', navbar=navbar_html, users=users_data)
-        else:
-            return jsonify({"error": "No users found"}), 404
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    content_type = request.headers['Content-Type']
+
+    # Traitement des formulaires HTML
+    if content_type == 'application/x-www-form-urlencoded':
+        try:
+            # Exécuter une requête pour sélectionner toutes les lignes de la table users
+            cursor.execute("SELECT * FROM users")
+            users = cursor.fetchall()
+            if users:
+                # Convertir les résultats en une liste de dictionnaires
+                users_data = []
+                for user in users:
+                    user_data = {
+                        'id': user[0],
+                        'name': user[1],
+                        'surname': user[2],
+                        'username': user[3],
+                        'email': user[4]
+                    }
+                    users_data.append(user_data)
+                return render_template('findby_result.html', navbar=navbar_html, users=users_data)
+            else:
+                return jsonify({"error": "No users found"}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+    
+    if content_type == 'application/json':
+        try:
+            # Exécuter une requête pour sélectionner toutes les lignes de la table users
+            cursor.execute("SELECT * FROM users")
+            users = cursor.fetchall()
+            if users:
+                # Convertir les résultats en une liste de dictionnaires
+                users_data = []
+                for user in users:
+                    user_data = {
+                        'id': user[0],
+                        'name': user[1],
+                        'surname': user[2],
+                        'username': user[3],
+                        'email': user[4]
+                    }
+                    users_data.append(user_data)
+                return jsonify(users_data)
+            else:
+                return jsonify({"error": "No users found"}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+            
 if __name__ == "__main__": 
     app.run(host='0.0.0.0', port='5000', debug=True)
