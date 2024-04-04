@@ -2,7 +2,7 @@
 
 ## Contenue de la base de donnée de l'API utilisateur : 
 
-**Base de donnée utilisateur (Accessible par toutes la API) :**
+**Base de donnée utilisateur (Accessible par toutes les API) :**
  - ID
  - Surname
  - Name
