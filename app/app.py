@@ -115,7 +115,7 @@ def find_user_by_interface_result():
     if request.method == 'POST':
         data = request.form['data']
         attribut = request.form['attribut']
-        url = 'http://localhost:5000/user/findby'
+        url = 'http://localhost:5000/users/user/findby'
         if attribut == 'name':
             params = {'name': data}
         elif attribut == 'surname':
@@ -204,7 +204,7 @@ def recovery_of_user_to_modify():
     if request.method == 'POST':
         data = request.form['data']
         attribut = request.form['attribut']
-        url = 'http://localhost:5000/user/findby'
+        url = 'http://localhost:5000/users/user/findby'
         if attribut == 'name':
             params = {'name': data}
         elif attribut == 'surname':
@@ -277,7 +277,7 @@ def affichage_donnée_modifier():
     data_user = {'name': name, 'surname': surname, 'username':username, 'email': email}
     headers = {'Content-Type': 'application/json'}
     data=json.dumps(data_user)
-    response = requests.patch(f'http://localhost:5000/user/{user_id}', headers=headers, data=data)
+    response = requests.patch(f'http://localhost:5000/users/user/{user_id}', headers=headers, data=data)
     if response.status_code == 200:
         return render_template("modification_result.html", navbar = navbar_html)
     else:
@@ -292,7 +292,7 @@ def recovery_of_user_to_delete():
     if request.method == 'POST':
         data = request.form['data']
         attribut = request.form['attribut']
-        url = 'http://localhost:5000/user/findby'
+        url = 'http://localhost:5000/users/user/findby'
         if attribut == 'name':
             params = {'name': data}
         elif attribut == 'surname':
@@ -326,7 +326,7 @@ def affichage_donnée_delete():
     if content_type == 'application/x-www-form-urlencoded':
         user_id = request.form.get('id')
     headers = {'Content-Type': 'application/json'}
-    response = requests.delete(f'http://localhost:5000/user/{user_id}', headers=headers)
+    response = requests.delete(f'http://localhost:5000/users/user/{user_id}', headers=headers)
     if response.status_code == 204:
         return render_template("delete_result.html", navbar=navbar_html)
     else:
