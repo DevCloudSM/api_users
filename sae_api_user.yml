@@ -29,7 +29,7 @@
           
 
   paths:
-    /user:
+    /users/user:
       post:
         tags:
           - user
@@ -48,7 +48,7 @@
                 schema:
                   $ref: '#/components/schemas/user'
 
-    /user/{userId}:
+    /users/user/{userId}:
       get:
         tags:
           - user
@@ -69,6 +69,7 @@
                   $ref: '#/components/schemas/user'
           '404':
             description: Utilisateur non trouvé
+            
             
     
       patch:
@@ -116,7 +117,7 @@
             description: Utilisateur non trouvé
             
             
-    /user/findby:
+    /users/user/findby:
       get:
         tags:
           - user
@@ -154,5 +155,18 @@
           '404':
             description: Utilisateur non trouvé
             
-            
+    /users/user/:
+      get:
+        tags:
+          - user
+        summary: Récupérer tous les utilisateurs
+        responses:
+          '200':
+            description: Informations de l'utilisateur récupérées avec succès
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/user'
+          '404':
+            description: Utilisateur non trouvé
             
